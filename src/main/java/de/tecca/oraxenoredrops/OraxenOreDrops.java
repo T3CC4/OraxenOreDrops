@@ -1,5 +1,6 @@
 package de.tecca.oraxenoredrops;
 
+import de.tecca.oraxenoredrops.commands.OraxenOreDropsCommand;
 import de.tecca.oraxenoredrops.listeners.BlockBreakListener;
 import de.tecca.oraxenoredrops.managers.BlockDropManager;
 import de.tecca.oraxenoredrops.util.AEAPIUtil;
@@ -43,6 +44,11 @@ public final class OraxenOreDrops extends JavaPlugin {
         blockBreakListener = new BlockBreakListener(this);
 
         Bukkit.getPluginManager().registerEvents(blockBreakListener, this);
+
+        // Command registrieren
+        OraxenOreDropsCommand commandExecutor = new OraxenOreDropsCommand(this);
+        getCommand("oraxenoredrops").setExecutor(commandExecutor);
+        getCommand("oraxenoredrops").setTabCompleter(commandExecutor);
 
         pluginLogger.info("OraxenOrePlugin erfolgreich gestartet!");
     }

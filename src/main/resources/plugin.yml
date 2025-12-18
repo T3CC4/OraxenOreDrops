@@ -2,3 +2,24 @@ name: OraxenOreDrops
 version: '1.0'
 main: de.tecca.oraxenoredrops.OraxenOreDrops
 api-version: '1.21'
+
+commands:
+  oraxenoredrops:
+    description: OraxenOreDrops Hauptbefehl
+    usage: /oraxenoredrops <reload|debug|info>
+    aliases: [ood, oraxendrop]
+    permission: oraxenoredrops.use
+
+permissions:
+  oraxenoredrops.use:
+    description: Erlaubt die Nutzung des /oraxenoredrops Befehls
+    default: op
+  oraxenoredrops.reload:
+    description: Erlaubt das Neuladen der Config
+    default: op
+  oraxenoredrops.debug:
+    description: Erlaubt das Umschalten des Debug-Modus
+    default: op
+  oraxenoredrops.info:
+    description: Erlaubt das Anzeigen von Plugin-Informationen
+    default: true
