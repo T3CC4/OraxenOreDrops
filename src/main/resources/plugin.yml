@@ -1,0 +1,4 @@
+name: OraxenOreDrops
+version: '1.0'
+main: de.tecca.oraxenoredrops.OraxenOreDrops
+api-version: '1.21'
