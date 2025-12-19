@@ -34,7 +34,7 @@ public class BlockBreakListener implements Listener {
         Block block = event.getBlock();
         Player player = event.getPlayer();
 
-        // Debug-Header
+        // Debug header
         if (debugMode) {
             plugin.getPluginLogger().info("=== BlockBreak ===");
             plugin.getPluginLogger().info("Block: " + block.getType());
@@ -43,20 +43,18 @@ public class BlockBreakListener implements Listener {
 
         ItemStack tool = player.getInventory().getItemInMainHand();
 
-        // Silk Touch Check - keine Custom Drops
-        // OPTIMIERT: EnchantmentHelper statt duplizierte Methode
+        // Silk Touch check - no custom drops
         if (EnchantmentHelper.hasSilkTouch(tool)) {
             if (debugMode) {
-                plugin.getPluginLogger().info("Silk Touch aktiv - keine Custom Drops");
+                plugin.getPluginLogger().info("Silk Touch active - no custom drops");
                 plugin.getPluginLogger().info("==================");
             }
             return;
         }
 
-        // OPTIMIERT: EnchantmentHelper statt duplizierte Methode
         int fortuneLevel = EnchantmentHelper.getFortuneLevel(tool);
 
-        // VeinMiner Detection
+        // VeinMiner detection
         VeinMinerSession session = getOrCreateSession(player);
         boolean isVeinMining = session.isVeinMining();
 
@@ -66,7 +64,7 @@ public class BlockBreakListener implements Listener {
             effectiveFortune = Math.max(0, fortuneLevel - 5);
             session.incrementBlocks();
 
-            // Nur jeder 5. Block
+            // Only every 5th block
             if (session.getBlocksMinedThisSession() % 5 != 0) {
                 if (debugMode) {
                     plugin.getPluginLogger().info("VeinMiner Skip (" +
@@ -81,11 +79,11 @@ public class BlockBreakListener implements Listener {
             }
         }
 
-        // Custom Drops holen (über BlockDropManager)
+        // Get custom drops (via BlockDropManager)
         List<ItemStack> customDrops = plugin.getBlockDropManager()
                 .getDrops(block.getType(), effectiveFortune);
 
-        // Items droppen
+        // Drop items
         if (!customDrops.isEmpty()) {
             for (ItemStack drop : customDrops) {
                 if (debugMode) {

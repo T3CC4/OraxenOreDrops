@@ -23,18 +23,18 @@ public final class OraxenOreDrops extends JavaPlugin {
 
         pluginLogger = new PluginLogger(this);
 
-        // Oraxen Check
+        // Check for Oraxen
         if (Bukkit.getPluginManager().getPlugin("Oraxen") == null) {
-            getLogger().severe("Oraxen nicht gefunden! Plugin wird deaktiviert.");
+            getLogger().severe("Oraxen not found! Plugin will be disabled.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
-        // AdvancedEnchantments API
+        // Initialize AdvancedEnchantments API
         if (AEAPIUtil.initialize()) {
-            pluginLogger.info("✓ AdvancedEnchantments erkannt - Custom Enchants aktiv!");
+            pluginLogger.info("✓ AdvancedEnchantments detected - Custom enchants enabled!");
         } else {
-            pluginLogger.info("AdvancedEnchantments nicht gefunden - Vanilla Enchants");
+            pluginLogger.info("AdvancedEnchantments not found - Using vanilla enchants only");
         }
 
         saveDefaultConfig();
@@ -45,12 +45,12 @@ public final class OraxenOreDrops extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(blockBreakListener, this);
 
-        // Command registrieren
+        // Register command
         OraxenOreDropsCommand commandExecutor = new OraxenOreDropsCommand(this);
         getCommand("oraxenoredrops").setExecutor(commandExecutor);
         getCommand("oraxenoredrops").setTabCompleter(commandExecutor);
 
-        pluginLogger.info("OraxenOrePlugin erfolgreich gestartet!");
+        pluginLogger.info("OraxenOreDrops successfully enabled!");
     }
 
     @Override
@@ -59,7 +59,11 @@ public final class OraxenOreDrops extends JavaPlugin {
             blockBreakListener.shutdown();
         }
 
-        pluginLogger.info("OraxenOrePlugin deaktiviert!");
+        pluginLogger.info("OraxenOreDrops disabled!");
+    }
+
+    public static OraxenOreDrops getInstance() {
+        return instance;
     }
 
     public BlockDropManager getBlockDropManager() {

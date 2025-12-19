@@ -3,16 +3,20 @@ package de.tecca.oraxenoredrops.util;
 import net.advancedplugins.ae.api.AEAPI;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Utility class for AdvancedEnchantments API integration
+ * Provides safe access to custom enchantments with fallback handling
+ */
 public class AEAPIUtil {
 
     private static boolean available = false;
 
     /**
-     * Initialisiert die AEAPI (wird beim Plugin-Start aufgerufen)
+     * Initializes the AEAPI (called on plugin startup)
      */
     public static boolean initialize() {
         try {
-            // Prüfe ob AEAPI Klasse existiert
+            // Check if AEAPI class exists
             Class.forName("net.advancedplugins.ae.api.AEAPI");
             available = true;
             return true;
@@ -23,29 +27,29 @@ public class AEAPIUtil {
     }
 
     /**
-     * Prüft ob AdvancedEnchantments verfügbar ist
+     * Checks if AdvancedEnchantments is available
      */
     public static boolean isAvailable() {
         return available;
     }
 
     /**
-     * Prüft ob ein Item ein bestimmtes Custom Enchantment hat
+     * Checks if an item has a specific custom enchantment
      *
-     * @param item Das zu prüfende Item
-     * @param enchantName Name des Enchantments (z.B. "Looting", "Luck")
-     * @return true wenn das Enchantment vorhanden ist
+     * @param item The item to check
+     * @param enchantName Name of the enchantment (e.g. "Looting", "Luck")
+     * @return true if the enchantment is present
      */
     public static boolean hasEnchantment(ItemStack item, String enchantName) {
         return getEnchantmentLevel(item, enchantName) > 0;
     }
 
     /**
-     * Holt das Level eines Custom Enchantments
+     * Gets the level of a custom enchantment
      *
-     * @param item Das Item
-     * @param enchantName Name des Enchantments
-     * @return Level des Enchantments, 0 wenn nicht vorhanden
+     * @param item The item
+     * @param enchantName Name of the enchantment
+     * @return Level of the enchantment, 0 if not present
      */
     public static int getEnchantmentLevel(ItemStack item, String enchantName) {
         if (!isAvailable() || item == null || enchantName == null) {
@@ -53,7 +57,7 @@ public class AEAPIUtil {
         }
 
         try {
-            // getEnchantmentLevel gibt 0 zurück wenn Enchant nicht vorhanden ist
+            // getEnchantmentLevel returns 0 if enchant is not present
             return AEAPI.getEnchantLevel(enchantName, item);
         } catch (Exception e) {
             return 0;
@@ -61,11 +65,11 @@ public class AEAPIUtil {
     }
 
     /**
-     * Holt das höchste Level von mehreren möglichen Enchantment-Namen
+     * Gets the highest level from multiple possible enchantment names
      *
-     * @param item Das Item
-     * @param enchantNames Array von möglichen Namen (z.B. ["Looting", "looting", "LOOTING"])
-     * @return Höchstes gefundenes Level
+     * @param item The item
+     * @param enchantNames Array of possible names (e.g. ["Looting", "looting", "LOOTING"])
+     * @return Highest found level
      */
     public static int getHighestEnchantmentLevel(ItemStack item, String... enchantNames) {
         if (!isAvailable() || item == null || enchantNames == null) {
@@ -83,12 +87,12 @@ public class AEAPIUtil {
     }
 
     /**
-     * Wendet ein Custom Enchantment auf ein Item an
+     * Applies a custom enchantment to an item
      *
-     * @param item Das Item
-     * @param enchantName Name des Enchantments
-     * @param level Level des Enchantments
-     * @return Das modifizierte Item
+     * @param item The item
+     * @param enchantName Name of the enchantment
+     * @param level Level of the enchantment
+     * @return The modified item
      */
     public static ItemStack applyEnchantment(ItemStack item, String enchantName, int level) {
         if (!isAvailable() || item == null || enchantName == null) {
@@ -103,11 +107,11 @@ public class AEAPIUtil {
     }
 
     /**
-     * Entfernt ein Custom Enchantment von einem Item
+     * Removes a custom enchantment from an item
      *
-     * @param item Das Item
-     * @param enchantName Name des Enchantments
-     * @return Das modifizierte Item
+     * @param item The item
+     * @param enchantName Name of the enchantment
+     * @return The modified item
      */
     public static ItemStack removeEnchantment(ItemStack item, String enchantName) {
         if (!isAvailable() || item == null || enchantName == null) {
@@ -121,44 +125,44 @@ public class AEAPIUtil {
         }
     }
 
-    // ========== HÄUFIG VERWENDETE ENCHANTMENTS ==========
+    // ========== COMMONLY USED ENCHANTMENTS ==========
 
     /**
-     * Holt Looting-Level (für Mob-Drops)
+     * Gets Looting level (for mob drops)
      */
     public static int getLootingLevel(ItemStack weapon) {
         return getHighestEnchantmentLevel(weapon, "Looting", "looting", "LOOTING");
     }
 
     /**
-     * Holt Fortune/Luck-Level (für Block-Drops)
+     * Gets Fortune/Luck level (for block drops)
      */
     public static int getFortuneLevel(ItemStack tool) {
         return getHighestEnchantmentLevel(tool, "Fortune", "Luck", "fortune", "luck");
     }
 
     /**
-     * Holt Veinminer-Level
+     * Gets Veinminer level
      */
     public static int getVeinminerLevel(ItemStack tool) {
         return getHighestEnchantmentLevel(tool, "Veinminer", "veinminer", "VeinMiner");
     }
 
     /**
-     * Holt Efficiency-Level
+     * Gets Efficiency level
      */
     public static int getEfficiencyLevel(ItemStack tool) {
         return getHighestEnchantmentLevel(tool, "Efficiency", "efficiency", "EFFICIENCY");
     }
 
-    // ========== BLOCK METADATA KOMPATIBILITÄT ==========
+    // ========== BLOCK METADATA COMPATIBILITY ==========
 
     /**
-     * Prüft ob ein Block von AdvancedEnchantments ignoriert werden soll
-     * Siehe: https://ae.advancedplugins.net/for-developers/plugin-compatiblity-issues
+     * Checks if a block should be ignored by AdvancedEnchantments
+     * See: https://ae.advancedplugins.net/for-developers/plugin-compatiblity-issues
      *
-     * @param block Der zu prüfende Block
-     * @return true wenn Block ignoriert werden soll
+     * @param block The block to check
+     * @return true if block should be ignored
      */
     public static boolean shouldIgnoreBlock(org.bukkit.block.Block block) {
         if (!isAvailable() || block == null) {
@@ -166,24 +170,24 @@ public class AEAPIUtil {
         }
 
         try {
-            // Nutze Reflection falls AEAPI.ignoreBlockEvent() existiert
+            // Use reflection if AEAPI.ignoreBlockEvent() exists
             Class<?> aeapiClass = Class.forName("net.advancedplugins.ae.api.AEAPI");
             java.lang.reflect.Method method = aeapiClass.getMethod("ignoreBlockEvent", org.bukkit.block.Block.class);
             return (boolean) method.invoke(null, block);
         } catch (NoSuchMethodException e) {
-            // Methode existiert nicht - alte AE Version
+            // Method doesn't exist - old AE version
             return false;
         } catch (Exception e) {
-            // Anderer Fehler
+            // Other error
             return false;
         }
     }
 
     /**
-     * Markiert einen Block um von AdvancedEnchantments ignoriert zu werden
-     * Verhindert Duplicate-Drops wenn beide Plugins BlockBreakEvent nutzen
+     * Marks a block to be ignored by AdvancedEnchantments
+     * Prevents duplicate drops when both plugins use BlockBreakEvent
      *
-     * @param block Der zu markierende Block
+     * @param block The block to mark
      */
     public static void setIgnoreBlockEvent(org.bukkit.block.Block block) {
         if (!isAvailable() || block == null) {
@@ -191,12 +195,12 @@ public class AEAPIUtil {
         }
 
         try {
-            // Nutze Reflection falls AEAPI.setIgnoreBlockEvent() existiert
+            // Use reflection if AEAPI.setIgnoreBlockEvent() exists
             Class<?> aeapiClass = Class.forName("net.advancedplugins.ae.api.AEAPI");
             java.lang.reflect.Method method = aeapiClass.getMethod("setIgnoreBlockEvent", org.bukkit.block.Block.class);
             method.invoke(null, block);
         } catch (Exception e) {
-            // Ignorieren
+            // Ignore
         }
     }
 }

@@ -1,10 +1,31 @@
-# Block Drops
-# Format: block-typ -> drop-id -> oraxen-item, chance (in %), min-amount, max-amount
+# OraxenOreDrops Configuration
+# https://github.com/yourusername/OraxenOreDrops
+
+# Debug mode - shows detailed drop calculations in console
+debug-mode: false
+
+# Drop mechanics method
+# DIMINISHING - Logarithmic reduction for rare items (balanced for very rare drops)
+# BONUS_ROLLS - Additional rolls instead of chance increase (more predictable)
+# HYBRID - Mix of both methods (recommended for most servers)
+drop-mechanics:
+  method: HYBRID
+
+# Block drops configuration
+# Format: BLOCK_TYPE -> drop_id -> settings
+#
+# Settings:
+#   oraxen-item: The Oraxen item ID to drop
+#   chance: Drop chance in % (0.1 = 0.1%, 50 = 50%)
+#   min-amount: Minimum amount to drop
+#   max-amount: Maximum amount to drop
+#
+# Fortune/Looting scaling is automatic based on the chance value
 block-drops:
   STONE:
     drop1:
       oraxen-item: "smooth_pebble"
-      chance: 2.0  # 2% Chance
+      chance: 2.0  # 2% chance
       min-amount: 1
       max-amount: 1
 
@@ -35,3 +56,16 @@ block-drops:
       chance: 5.0
       min-amount: 1
       max-amount: 1
+
+# Example for multiple drops from same block:
+#  DIAMOND_ORE:
+#    drop1:
+#      oraxen-item: "diamond_shard"
+#      chance: 25.0
+#      min-amount: 1
+#      max-amount: 3
+#    drop2:
+#      oraxen-item: "rare_gem"
+#      chance: 0.5  # 0.5% chance for rare drop
+#      min-amount: 1
+#      max-amount: 1

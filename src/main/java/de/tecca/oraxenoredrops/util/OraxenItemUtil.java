@@ -3,14 +3,18 @@ package de.tecca.oraxenoredrops.util;
 import de.tecca.oraxenoredrops.OraxenOreDrops;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Utility class for Oraxen item operations
+ * Provides safe access to Oraxen items with proper error handling
+ */
 public class OraxenItemUtil {
 
     /**
-     * Baut ein Oraxen-Item mit Logging
+     * Builds an Oraxen item with logging
      *
-     * @param oraxenItemId Die Oraxen-Item ID
-     * @param plugin Plugin-Instanz für Logging
-     * @return ItemStack oder null wenn nicht gefunden
+     * @param oraxenItemId The Oraxen item ID
+     * @param plugin Plugin instance for logging
+     * @return ItemStack or null if not found
      */
     public static ItemStack buildItem(String oraxenItemId, OraxenOreDrops plugin) {
         if (oraxenItemId == null || oraxenItemId.isEmpty()) {
@@ -21,19 +25,19 @@ public class OraxenItemUtil {
             if (builder != null) {
                 return builder.build();
             }
-            plugin.getPluginLogger().warn("Oraxen-Item nicht gefunden: '" + oraxenItemId + "'");
+            plugin.getPluginLogger().warn("Oraxen item not found: '" + oraxenItemId + "'");
             return null;
         } catch (Exception e) {
-            plugin.getPluginLogger().warn("Item-Fehler '" + oraxenItemId + "': " + e.getMessage());
+            plugin.getPluginLogger().warn("Item error '" + oraxenItemId + "': " + e.getMessage());
             return null;
         }
     }
 
     /**
-     * Baut ein Oraxen-Item ohne Logging (für Performance-kritische Bereiche)
+     * Builds an Oraxen item without logging (for performance-critical areas)
      *
-     * @param oraxenItemId Die Oraxen-Item ID
-     * @return ItemStack oder null wenn nicht gefunden
+     * @param oraxenItemId The Oraxen item ID
+     * @return ItemStack or null if not found
      */
     public static ItemStack buildItemSilent(String oraxenItemId) {
         if (oraxenItemId == null || oraxenItemId.isEmpty()) {
@@ -48,10 +52,10 @@ public class OraxenItemUtil {
     }
 
     /**
-     * Validiert ob ein Oraxen-Item existiert
+     * Validates if an Oraxen item exists
      *
-     * @param oraxenItemId Die Oraxen-Item ID
-     * @return true wenn Item existiert
+     * @param oraxenItemId The Oraxen item ID
+     * @return true if item exists
      */
     public static boolean validate(String oraxenItemId) {
         if (oraxenItemId == null || oraxenItemId.isEmpty()) {
@@ -65,34 +69,34 @@ public class OraxenItemUtil {
     }
 
     /**
-     * Validiert ob ein Oraxen-Item existiert mit Logging
+     * Validates if an Oraxen item exists with logging
      *
-     * @param oraxenItemId Die Oraxen-Item ID
-     * @param plugin Plugin-Instanz für Logging
-     * @return true wenn Item existiert
+     * @param oraxenItemId The Oraxen item ID
+     * @param plugin Plugin instance for logging
+     * @return true if item exists
      */
     public static boolean validateWithLogging(String oraxenItemId, OraxenOreDrops plugin) {
         if (oraxenItemId == null || oraxenItemId.isEmpty()) {
-            plugin.getPluginLogger().warn("Oraxen-Item ID ist null oder leer!");
+            plugin.getPluginLogger().warn("Oraxen item ID is null or empty!");
             return false;
         }
         try {
             boolean exists = io.th0rgal.oraxen.api.OraxenItems.exists(oraxenItemId);
             if (!exists) {
-                plugin.getPluginLogger().warn("Oraxen-Item existiert nicht: '" + oraxenItemId + "'");
+                plugin.getPluginLogger().warn("Oraxen item does not exist: '" + oraxenItemId + "'");
             }
             return exists;
         } catch (Exception e) {
-            plugin.getPluginLogger().warn("Fehler beim Validieren von '" + oraxenItemId + "': " + e.getMessage());
+            plugin.getPluginLogger().warn("Error validating '" + oraxenItemId + "': " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Holt Oraxen-ID von einem ItemStack
+     * Gets Oraxen ID from an ItemStack
      *
-     * @param item Das ItemStack
-     * @return Oraxen-ID oder null wenn nicht gefunden
+     * @param item The ItemStack
+     * @return Oraxen ID or null if not found
      */
     public static String getIdByItem(ItemStack item) {
         if (item == null) {

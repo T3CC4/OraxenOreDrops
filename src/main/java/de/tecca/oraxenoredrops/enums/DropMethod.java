@@ -1,7 +1,7 @@
 package de.tecca.oraxenoredrops.enums;
 
 public enum DropMethod {
-    DIMINISHING,    // Logarithmische Reduktion für seltene Items
-    BONUS_ROLLS,    // Zusätzliche Würfe statt Chance-Erhöhung
-    HYBRID          // Mix aus beiden (empfohlen)
+    DIMINISHING,    // Logarithmic reduction for rare items
+    BONUS_ROLLS,    // Additional rolls instead of chance increase
+    HYBRID          // Mix of both (recommended)
 }

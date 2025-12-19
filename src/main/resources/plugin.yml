@@ -2,24 +2,27 @@ name: OraxenOreDrops
 version: '1.0'
 main: de.tecca.oraxenoredrops.OraxenOreDrops
 api-version: '1.21'
+author: Tecca
+description: Advanced custom ore drops for Oraxen with intelligent Fortune scaling
+website: https://github.com/T3CC4/OraxenOreDrops
 
 commands:
   oraxenoredrops:
-    description: OraxenOreDrops Hauptbefehl
+    description: OraxenOreDrops main command
     usage: /oraxenoredrops <reload|debug|info>
     aliases: [ood, oraxendrop]
     permission: oraxenoredrops.use
 
 permissions:
   oraxenoredrops.use:
-    description: Erlaubt die Nutzung des /oraxenoredrops Befehls
+    description: Allows using the /oraxenoredrops command
     default: op
   oraxenoredrops.reload:
-    description: Erlaubt das Neuladen der Config
+    description: Allows reloading the config
     default: op
   oraxenoredrops.debug:
-    description: Erlaubt das Umschalten des Debug-Modus
+    description: Allows toggling debug mode
     default: op
   oraxenoredrops.info:
-    description: Erlaubt das Anzeigen von Plugin-Informationen
+    description: Allows viewing plugin information
     default: true

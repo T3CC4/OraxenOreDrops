@@ -3,19 +3,23 @@ package de.tecca.oraxenoredrops.util;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Unified enchantment helper that combines vanilla and AdvancedEnchantments
+ * Provides consistent access to enchantments from both sources
+ */
 public class EnchantmentHelper {
 
     // ==================== FORTUNE/LUCK ====================
 
     /**
-     * Holt Fortune/Luck-Level für Block-Drops
+     * Gets Fortune/Luck level for block drops
      *
-     * Kombiniert:
+     * Combines:
      * - Vanilla Fortune
      * - AdvancedEnchantments Fortune/Luck
      *
-     * @param tool Das Werkzeug (Pickaxe, Axe, Shovel, etc.)
-     * @return Höchstes Fortune-Level (0 wenn keine)
+     * @param tool The tool (Pickaxe, Axe, Shovel, etc.)
+     * @return Highest Fortune level (0 if none)
      */
     public static int getFortuneLevel(ItemStack tool) {
         if (tool == null || !tool.hasItemMeta()) {
@@ -28,21 +32,21 @@ public class EnchantmentHelper {
         // AdvancedEnchantments Fortune/Luck
         int aeFortune = AEAPIUtil.getFortuneLevel(tool);
 
-        // Höchstes Level zurückgeben
+        // Return highest level
         return Math.max(vanillaFortune, aeFortune);
     }
 
     // ==================== LOOTING ====================
 
     /**
-     * Holt Looting-Level für Mob-Drops
+     * Gets Looting level for mob drops
      *
-     * Kombiniert:
+     * Combines:
      * - Vanilla Looting
      * - AdvancedEnchantments Looting
      *
-     * @param weapon Die Waffe (Schwert, Axt, etc.)
-     * @return Höchstes Looting-Level (0 wenn keine)
+     * @param weapon The weapon (Sword, Axe, etc.)
+     * @return Highest Looting level (0 if none)
      */
     public static int getLootingLevel(ItemStack weapon) {
         if (weapon == null || !weapon.hasItemMeta()) {
@@ -55,19 +59,19 @@ public class EnchantmentHelper {
         // AdvancedEnchantments Looting
         int aeLooting = AEAPIUtil.getLootingLevel(weapon);
 
-        // Höchstes Level zurückgeben
+        // Return highest level
         return Math.max(vanillaLooting, aeLooting);
     }
 
     // ==================== SILK TOUCH ====================
 
     /**
-     * Prüft ob Tool Silk Touch hat (Vanilla oder AE)
+     * Checks if tool has Silk Touch (Vanilla or AE)
      *
-     * Bei Silk Touch sollten KEINE Custom-Drops gegeben werden!
+     * With Silk Touch, NO custom drops should be given!
      *
-     * @param tool Das Werkzeug
-     * @return true wenn Silk Touch aktiv ist
+     * @param tool The tool
+     * @return true if Silk Touch is active
      */
     public static boolean hasSilkTouch(ItemStack tool) {
         if (tool == null || !tool.hasItemMeta()) {
@@ -93,10 +97,10 @@ public class EnchantmentHelper {
     // ==================== EFFICIENCY ====================
 
     /**
-     * Holt Efficiency-Level (für Veinminer-Detection)
+     * Gets Efficiency level (for Veinminer detection)
      *
-     * @param tool Das Werkzeug
-     * @return Höchstes Efficiency-Level (0 wenn keine)
+     * @param tool The tool
+     * @return Highest Efficiency level (0 if none)
      */
     public static int getEfficiencyLevel(ItemStack tool) {
         if (tool == null || !tool.hasItemMeta()) {
@@ -115,10 +119,10 @@ public class EnchantmentHelper {
     // ==================== UNBREAKING ====================
 
     /**
-     * Holt Unbreaking-Level
+     * Gets Unbreaking level
      *
-     * @param item Das Item
-     * @return Höchstes Unbreaking-Level (0 wenn keine)
+     * @param item The item
+     * @return Highest Unbreaking level (0 if none)
      */
     public static int getUnbreakingLevel(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
@@ -128,7 +132,7 @@ public class EnchantmentHelper {
         // Vanilla Unbreaking
         int vanillaUnbreaking = item.getEnchantmentLevel(Enchantment.UNBREAKING);
 
-        // AdvancedEnchantments Unbreaking (falls vorhanden)
+        // AdvancedEnchantments Unbreaking (if present)
         int aeUnbreaking = 0;
         if (AEAPIUtil.isAvailable()) {
             aeUnbreaking = AEAPIUtil.getEnchantmentLevel(item, "Unbreaking");
@@ -140,10 +144,10 @@ public class EnchantmentHelper {
     // ==================== MENDING ====================
 
     /**
-     * Prüft ob Item Mending hat
+     * Checks if item has Mending
      *
-     * @param item Das Item
-     * @return true wenn Mending aktiv ist
+     * @param item The item
+     * @return true if Mending is active
      */
     public static boolean hasMending(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
@@ -169,32 +173,32 @@ public class EnchantmentHelper {
     // ==================== UTILITY ====================
 
     /**
-     * Prüft ob Item irgendein Enchantment hat
+     * Checks if item has any enchantment
      *
-     * @param item Das Item
-     * @return true wenn mindestens ein Enchantment vorhanden ist
+     * @param item The item
+     * @return true if at least one enchantment is present
      */
     public static boolean hasAnyEnchantment(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
             return false;
         }
 
-        // Vanilla Enchantments
+        // Vanilla enchantments
         if (!item.getEnchantments().isEmpty()) {
             return true;
         }
 
-        // AdvancedEnchantments (falls vorhanden)
-        // Kann nicht direkt geprüft werden, aber wenn Tool hat z.B. Looting...
-        // Für Performance-Gründe nur grundlegende Prüfung
+        // AdvancedEnchantments (if present)
+        // Cannot be checked directly, but if tool has e.g. Looting...
+        // For performance reasons only basic check
         return false;
     }
 
     /**
-     * Debug: Gibt alle Enchantments eines Items aus
+     * Debug: Outputs all enchantments of an item
      *
-     * @param item Das Item
-     * @return String mit allen Enchantments
+     * @param item The item
+     * @return String with all enchantments
      */
     public static String getEnchantmentInfo(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
@@ -239,25 +243,25 @@ public class EnchantmentHelper {
     // ==================== ADVANCED ====================
 
     /**
-     * Berechnet effektive Drop-Chance mit Enchantment-Bonus
+     * Calculates effective drop chance with enchantment bonus
      *
-     * Nutzt DropMechanics für fortgeschrittene Berechnung
+     * Uses DropMechanics for advanced calculation
      *
-     * @param baseChance Basis-Chance in %
-     * @param enchantLevel Fortune/Looting Level
-     * @return Finale Chance in %
+     * @param baseChance Base chance in %
+     * @param enchantLevel Fortune/Looting level
+     * @return Final chance in %
      */
     public static double calculateDropChance(double baseChance, int enchantLevel) {
         return DropMechanics.calculateDropChance(baseChance, enchantLevel);
     }
 
     /**
-     * Berechnet Drop-Menge mit Enchantment-Bonus
+     * Calculates drop amount with enchantment bonus
      *
-     * @param minAmount Min-Menge
-     * @param maxAmount Max-Menge
-     * @param enchantLevel Fortune/Looting Level
-     * @return Finale Menge
+     * @param minAmount Min amount
+     * @param maxAmount Max amount
+     * @param enchantLevel Fortune/Looting level
+     * @return Final amount
      */
     public static int calculateDropAmount(int minAmount, int maxAmount, int enchantLevel) {
         return DropMechanics.calculateDropAmount(minAmount, maxAmount, enchantLevel);

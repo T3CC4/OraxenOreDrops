@@ -5,8 +5,6 @@ import de.tecca.oraxenoredrops.enums.DropMethod;
 import de.tecca.oraxenoredrops.model.DropEntry;
 import de.tecca.oraxenoredrops.util.DropMechanics;
 import de.tecca.oraxenoredrops.util.OraxenItemUtil;
-import it.unimi.dsi.fastutil.objects.AbstractObjectList;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -25,21 +23,23 @@ public class BlockDropManager {
 
     private final Map<Material, List<DropEntry>> blockDrops = new ConcurrentHashMap<>();
 
-    // Config: Welche Drop-Methode verwenden?
-    private DropMethod dropMethod = DropMethod.HYBRID; // Standard: Hybrid
+    // Config: Which drop method to use?
+    private DropMethod dropMethod = DropMethod.HYBRID; // Default: Hybrid
 
     public BlockDropManager(OraxenOreDrops plugin) {
         this.plugin = plugin;
         this.debugMode = plugin.getConfig().getBoolean("debug-mode", false);
+        loadConfig();
+        loadBlockDrops();
     }
 
     private void loadConfig() {
         String methodStr = plugin.getConfig().getString("drop-mechanics.method", "HYBRID");
         try {
             dropMethod = DropMethod.valueOf(methodStr.toUpperCase());
-            info("Drop-Methode: " + dropMethod);
+            info("Drop method: " + dropMethod);
         } catch (IllegalArgumentException e) {
-            warn("Ungültige drop-method: " + methodStr + ", nutze HYBRID");
+            warn("Invalid drop-method: " + methodStr + ", using HYBRID");
             dropMethod = DropMethod.HYBRID;
         }
     }
@@ -47,7 +47,7 @@ public class BlockDropManager {
     private void loadBlockDrops() {
         ConfigurationSection section = plugin.getConfig().getConfigurationSection("block-drops");
         if (section == null) {
-            warn("Keine block-drops Sektion in Config!");
+            warn("No block-drops section in config!");
             return;
         }
 
@@ -67,31 +67,31 @@ public class BlockDropManager {
                     blockDrops.put(material, drops);
                     totalDrops += drops.size();
 
-                    debug("Block-Drops: " + material + " → " + drops.size() + " Items");
+                    debug("Block drops: " + material + " → " + drops.size() + " items");
                     for (DropEntry entry : drops) {
-                        debug("  - " + entry.oraxenItemId + " (" + entry.chance + "%)");
+                        debug("  - " + entry.oraxenItemId() + " (" + entry.chance() + "%)");
 
-                        // Debug: Zeige Fortune-Skalierung
+                        // Debug: Show fortune scaling
                         if (debugMode) {
-                            debugFortuneScaling(entry.chance);
+                            debugFortuneScaling(entry.chance());
                         }
                     }
                 }
             } catch (IllegalArgumentException e) {
-                warn("Ungültiger Block-Typ: " + blockType);
+                warn("Invalid block type: " + blockType);
                 invalidBlocks++;
             }
         }
 
-        info("Block-Drops: " + totalDrops + " Items für " + blockDrops.size() + " Blöcke" +
-                (invalidBlocks > 0 ? " (" + invalidBlocks + " ungültig)" : ""));
+        info("Block drops: " + totalDrops + " items for " + blockDrops.size() + " blocks" +
+                (invalidBlocks > 0 ? " (" + invalidBlocks + " invalid)" : ""));
     }
 
     private List<DropEntry> loadDropEntries(ConfigurationSection section, String path) {
         List<DropEntry> drops = new ArrayList<>();
 
         if (section == null) {
-            warn(path + ": Section ist null!");
+            warn(path + ": Section is null!");
             return drops;
         }
 
@@ -104,19 +104,19 @@ public class BlockDropManager {
             int minAmount = entrySection.getInt("min-amount", 1);
             int maxAmount = entrySection.getInt("max-amount", 1);
 
-            // Validierung
+            // Validation
             if (!OraxenItemUtil.validate(itemId)) {
-                warn(path + "." + key + ": Item '" + itemId + "' ungültig");
+                warn(path + "." + key + ": Item '" + itemId + "' invalid");
                 continue;
             }
 
             if (chance <= 0 || chance > 100) {
-                warn(path + "." + key + ": Ungültige Chance " + chance + "%");
+                warn(path + "." + key + ": Invalid chance " + chance + "%");
                 continue;
             }
 
             if (minAmount < 0 || maxAmount < minAmount) {
-                warn(path + "." + key + ": Ungültige Mengen (min=" + minAmount + ", max=" + maxAmount + ")");
+                warn(path + "." + key + ": Invalid amounts (min=" + minAmount + ", max=" + maxAmount + ")");
                 continue;
             }
 
@@ -127,10 +127,10 @@ public class BlockDropManager {
     }
 
     /**
-     * Debug: Zeigt wie Fortune die Chance skaliert
+     * Debug: Shows how Fortune scales the chance
      */
     private void debugFortuneScaling(double baseChance) {
-        debug("  Fortune-Skalierung für " + baseChance + "%:");
+        debug("  Fortune scaling for " + baseChance + "%:");
         for (int fortune = 0; fortune <= 10; fortune += 3) {
             String result = switch (dropMethod) {
                 case DIMINISHING -> {
@@ -154,17 +154,17 @@ public class BlockDropManager {
     }
 
     /**
-     * Holt Drops für einen Block mit Fortune-Level
+     * Gets drops for a block with Fortune level
      */
     public List<ItemStack> getDrops(Material material, int fortuneLevel) {
         List<DropEntry> entries = blockDrops.get(material);
 
         debug("getBlockDrops(" + material + ", Fortune=" + fortuneLevel + ")");
-        debug("  Methode: " + dropMethod);
-        debug("  Einträge: " + (entries != null ? entries.size() : 0));
+        debug("  Method: " + dropMethod);
+        debug("  Entries: " + (entries != null ? entries.size() : 0));
 
         if (entries == null || entries.isEmpty()) {
-            debug("  → KEINE Drops konfiguriert");
+            debug("  → NO drops configured");
             return Collections.emptyList();
         }
 
@@ -172,59 +172,59 @@ public class BlockDropManager {
     }
 
     /**
-     * Verarbeitet Drops mit neuer Mechanik
+     * Processes drops with new mechanics
      */
     private List<ItemStack> processDrops(List<DropEntry> entries, int fortuneLevel) {
         List<ItemStack> drops = new ArrayList<>();
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
         for (DropEntry entry : entries) {
-            debug("  Drop: " + entry.oraxenItemId + " (Base: " + entry.chance + "%)");
+            debug("  Drop: " + entry.oraxenItemId() + " (Base: " + entry.chance() + "%)");
 
             boolean dropped = false;
             int amount = 0;
 
-            // Wähle Drop-Methode
+            // Choose drop method
             switch (dropMethod) {
                 case DIMINISHING:
-                    dropped = rollDiminishing(entry.chance, fortuneLevel, random);
+                    dropped = rollDiminishing(entry.chance(), fortuneLevel, random);
                     if (dropped) {
                         amount = DropMechanics.calculateDropAmount(
-                                entry.minAmount, entry.maxAmount, fortuneLevel);
+                                entry.minAmount(), entry.maxAmount(), fortuneLevel);
                     }
                     break;
 
                 case BONUS_ROLLS:
-                    amount = rollBonusRolls(entry.chance, fortuneLevel,
-                            entry.minAmount, entry.maxAmount, random);
+                    amount = rollBonusRolls(entry.chance(), fortuneLevel,
+                            entry.minAmount(), entry.maxAmount(), random);
                     dropped = amount > 0;
                     break;
 
                 case HYBRID:
-                    amount = rollHybrid(entry.chance, fortuneLevel,
-                            entry.minAmount, entry.maxAmount, random);
+                    amount = rollHybrid(entry.chance(), fortuneLevel,
+                            entry.minAmount(), entry.maxAmount(), random);
                     dropped = amount > 0;
                     break;
             }
 
             if (dropped && amount > 0) {
-                ItemStack item = OraxenItemUtil.buildItem(entry.oraxenItemId, plugin);
+                ItemStack item = OraxenItemUtil.buildItem(entry.oraxenItemId(), plugin);
                 if (item != null) {
                     item.setAmount(amount);
                     drops.add(item);
-                    debug("    ✓ ERFOLG: " + item.getType() + " x" + amount);
+                    debug("    ✓ SUCCESS: " + item.getType() + " x" + amount);
                 }
             } else {
                 debug("    ✗ MISS");
             }
         }
 
-        debug("  TOTAL: " + drops.size() + " Drops");
+        debug("  TOTAL: " + drops.size() + " drops");
         return drops;
     }
 
     /**
-     * METHODE 1: Diminishing Returns
+     * METHOD 1: Diminishing Returns
      */
     private boolean rollDiminishing(double baseChance, int fortuneLevel, ThreadLocalRandom random) {
         double finalChance = DropMechanics.calculateDropChance(baseChance, fortuneLevel);
@@ -240,7 +240,7 @@ public class BlockDropManager {
     }
 
     /**
-     * METHODE 2: Bonus Rolls
+     * METHOD 2: Bonus Rolls
      */
     private int rollBonusRolls(double baseChance, int fortuneLevel,
                                int minAmount, int maxAmount, ThreadLocalRandom random) {
@@ -252,7 +252,7 @@ public class BlockDropManager {
 
         int totalAmount = 0;
 
-        // Würfle für jeden Roll
+        // Roll for each attempt
         for (int i = 0; i < result.rolls; i++) {
             double roll = random.nextDouble() * 100;
 
@@ -276,7 +276,7 @@ public class BlockDropManager {
     }
 
     /**
-     * METHODE 3: Hybrid
+     * METHOD 3: Hybrid
      */
     private int rollHybrid(double baseChance, int fortuneLevel,
                            int minAmount, int maxAmount, ThreadLocalRandom random) {
@@ -311,11 +311,11 @@ public class BlockDropManager {
     }
 
     /**
-     * Setzt Drop-Methode (für Commands/Testing)
+     * Sets drop method (for commands/testing)
      */
     public void setDropMethod(DropMethod method) {
         this.dropMethod = method;
-        info("Drop-Methode geändert zu: " + method);
+        info("Drop method changed to: " + method);
     }
 
     public DropMethod getDropMethod() {

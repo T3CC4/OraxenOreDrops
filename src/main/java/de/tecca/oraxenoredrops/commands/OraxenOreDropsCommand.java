@@ -41,33 +41,33 @@ public class OraxenOreDropsCommand implements CommandExecutor, TabCompleter {
                 return handleInfo(sender);
 
             default:
-                sender.sendMessage("§cUnbekannter Befehl. Nutze /oraxenoredrops help");
+                sender.sendMessage("§cUnknown command. Use /oraxenoredrops help");
                 return true;
         }
     }
 
     private boolean handleReload(CommandSender sender) {
         if (!sender.hasPermission("oraxenoredrops.reload")) {
-            sender.sendMessage("§cKeine Berechtigung!");
+            sender.sendMessage("§cNo permission!");
             return true;
         }
 
-        sender.sendMessage("§e[OraxenOreDrops] §7Lade Config neu...");
+        sender.sendMessage("§e[OraxenOreDrops] §7Reloading config...");
 
         try {
-            // Config neu laden
+            // Reload config
             plugin.reloadConfig();
 
-            // BlockDropManager neu laden
+            // Reload BlockDropManager
             plugin.getBlockDropManager().reload();
 
-            sender.sendMessage("§a[OraxenOreDrops] §7Config erfolgreich neu geladen!");
-            sender.sendMessage("§7Drop-Methode: §e" + plugin.getBlockDropManager().getDropMethod());
-            sender.sendMessage("§7Debug-Modus: §e" + plugin.getConfig().getBoolean("debug-mode", false));
+            sender.sendMessage("§a[OraxenOreDrops] §7Config successfully reloaded!");
+            sender.sendMessage("§7Drop method: §e" + plugin.getBlockDropManager().getDropMethod());
+            sender.sendMessage("§7Debug mode: §e" + plugin.getConfig().getBoolean("debug-mode", false));
 
         } catch (Exception e) {
-            sender.sendMessage("§c[OraxenOreDrops] Fehler beim Reload: " + e.getMessage());
-            plugin.getPluginLogger().severe("Reload-Fehler: " + e.getMessage());
+            sender.sendMessage("§c[OraxenOreDrops] Error during reload: " + e.getMessage());
+            plugin.getPluginLogger().severe("Reload error: " + e.getMessage());
             e.printStackTrace();
             return true;
         }
@@ -77,14 +77,14 @@ public class OraxenOreDropsCommand implements CommandExecutor, TabCompleter {
 
     private boolean handleDebug(CommandSender sender, String[] args) {
         if (!sender.hasPermission("oraxenoredrops.debug")) {
-            sender.sendMessage("§cKeine Berechtigung!");
+            sender.sendMessage("§cNo permission!");
             return true;
         }
 
         if (args.length < 2) {
             boolean current = plugin.getConfig().getBoolean("debug-mode", false);
-            sender.sendMessage("§e[OraxenOreDrops] Debug-Modus: §7" + current);
-            sender.sendMessage("§7Nutze: /oraxenoredrops debug <on|off>");
+            sender.sendMessage("§e[OraxenOreDrops] Debug mode: §7" + current);
+            sender.sendMessage("§7Use: /oraxenoredrops debug <on|off>");
             return true;
         }
 
@@ -96,33 +96,33 @@ public class OraxenOreDropsCommand implements CommandExecutor, TabCompleter {
 
         plugin.getBlockDropManager().setDebugMode(enable);
 
-        sender.sendMessage("§e[OraxenOreDrops] §7Debug-Modus " +
-                (enable ? "§aaktiviert" : "§cdeaktiviert"));
+        sender.sendMessage("§e[OraxenOreDrops] §7Debug mode " +
+                (enable ? "§aenabled" : "§cdisabled"));
 
         return true;
     }
 
     private boolean handleInfo(CommandSender sender) {
         if (!sender.hasPermission("oraxenoredrops.info")) {
-            sender.sendMessage("§cKeine Berechtigung!");
+            sender.sendMessage("§cNo permission!");
             return true;
         }
 
         sender.sendMessage("§e=== OraxenOreDrops Info ===");
         sender.sendMessage("§7Version: §f" + plugin.getDescription().getVersion());
-        sender.sendMessage("§7Drop-Methode: §f" + plugin.getBlockDropManager().getDropMethod());
-        sender.sendMessage("§7Debug-Modus: §f" + plugin.getConfig().getBoolean("debug-mode", false));
+        sender.sendMessage("§7Drop method: §f" + plugin.getBlockDropManager().getDropMethod());
+        sender.sendMessage("§7Debug mode: §f" + plugin.getConfig().getBoolean("debug-mode", false));
         sender.sendMessage("§7AdvancedEnchantments: §f" +
-                (de.tecca.oraxenoredrops.util.AEAPIUtil.isAvailable() ? "§aAktiv" : "§cInaktiv"));
+                (de.tecca.oraxenoredrops.util.AEAPIUtil.isAvailable() ? "§aActive" : "§cInactive"));
 
         return true;
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage("§e=== OraxenOreDrops Befehle ===");
-        sender.sendMessage("§7/oraxenoredrops reload §f- Config neu laden");
-        sender.sendMessage("§7/oraxenoredrops debug <on|off> §f- Debug-Modus umschalten");
-        sender.sendMessage("§7/oraxenoredrops info §f- Plugin-Informationen");
+        sender.sendMessage("§e=== OraxenOreDrops Commands ===");
+        sender.sendMessage("§7/oraxenoredrops reload §f- Reload config");
+        sender.sendMessage("§7/oraxenoredrops debug <on|off> §f- Toggle debug mode");
+        sender.sendMessage("§7/oraxenoredrops info §f- Plugin information");
     }
 
     @Override
